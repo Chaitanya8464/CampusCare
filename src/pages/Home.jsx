@@ -1,6 +1,6 @@
 export default function Home(){
     return(
-        <div className="Flex flex-col items-center justify-center h-screen bg-gray-100" >
+        <div className="Flex flex-col items-center justify-center h-screen bg-blue" >
             <h1 className="text-3xl font-bold text-blue-600"CampusCare></h1>
             <p className="text-gray-600 mt-2">Report & Track Campus Grievance</p>
             <div className="mt-5 space-x-4">
