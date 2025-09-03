@@ -45,7 +45,7 @@ export default function TrackComplaints() {
             {/* Header Tab*/}
             <div className="flex justify-center gap-6 mb-8">
                 <Link 
-                to="/" 
+                to="/submit" 
                 className="px-6 py-2 rounded-full bg-white text-black flex items-center gap-2"
                 >
                 Submit Complaint

@@ -11,7 +11,7 @@ export default function ComplaintForm() {
             
         {/* Tabs*/}
          <div className="flex justify-center gap-6 mb-8">
-            <Link to="/"
+            <Link to="/submit"
              className="px-6 py-2 rounded-full bg-black text-white flex items-center gap-2"
              >Submit Complaint</Link>
            
@@ -27,6 +27,7 @@ export default function ComplaintForm() {
             >
                 Cancel
             </Link>
+            
         </div>
         {/* Complaint Form*/}
         <div className="max-w-3xl mx-auto bg-gray-100 p-6 rounded-2xl shadow">

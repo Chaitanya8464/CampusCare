@@ -1,34 +1,48 @@
 import React from "react";
-import logo from './assets/CampusCare.jpg';
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ComplaintForm from "./components/ComplaintForm";
 import TrackComplaints from "./components/TrackComplaints";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import LandingPage from "./LandingPage/landing";
 import { Link } from "react-router-dom";
 import profileLogo from './assets/profileLogo.jpg';
+  import logo from './assets/CampusCare.jpg';
 
 export default function App() {
   return (
     <Router>
-      <div className="flex justify-between items-center mb-6 bg-gray-200">
-                <h1 className="text-xl font-semibold flex item-center gap-2">
-                   <img src={logo} alt="CampusCare" className="w-8 h-8 rounded-full" /> <Link to="/" className="hover:underline">CampusCare</Link>
-                </h1>
-                <div className="flex gap-3">
-                <button className="px-4 py-1 bg-black text-white rounded-lg">Student View</button>
-                <button className="px-4 py-1 border rounded-lg">Admin View</button>
-            </div>
-            <div>
-                <Link 
-                to="/login" 
-                className="px-4 py-1 bg-gray-200 ">
-                 <img src={profileLogo} alt="login" className="w-9 h-9 rounded-full"/> 
-                </Link>
-            </div>
+     <div className="flex flex-col ">
+      {/* Navbar */}
+      <nav className="flex justify-between rounded-lg shadow-gray-200 items-center bg-gray-800 text-white px-6 py-4 shadow-lg fixed top-0  left-0 w-full">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <img src={logo} alt="CampusCare" className="w-10 h-10 rounded-full" />
+          CampusCare
+        </h1>
+
+        <div className="hidden md:flex gap-4">
+            <Link to="/" className="hover:underline">Home</Link>
+            <Link to="/about" className="hover:underline">About</Link>
+            <Link to="/services" className="hover:underline">Services</Link>
+            <Link to="/contact" className="hover:underline">Contact</Link>
         </div>
+        
+        <div className="flex gap-4">
+          <Link
+            to="/login"
+            className="bg-white text-blue-600  rounded-full hover:bg-gray-100 transition"
+          >
+            <img src={profileLogo} alt="Profile" className="w-10 h-10 rounded-full" />
+          </Link>
+          
+        </div>
+        
+      </nav>
+      </div>
       <Routes>
-        <Route path="/" element={<ComplaintForm />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/submit" element={<ComplaintForm />} />
         <Route path="/track" element={<TrackComplaints />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
