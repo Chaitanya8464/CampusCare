@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import profileLogo from './assets/profileLogo.jpg';
   import logo from './assets/CampusCare.jpg';
 import SignInForm from "./pages/SignInForm";
+import SignUpForm from "./pages/SignUpForm";
 
 export default function App() {
   return (
@@ -40,14 +41,24 @@ export default function App() {
         </div>
         
       </nav>
+        
+       
       </div>
+    
+      
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/submit" element={<ComplaintForm />} />
         <Route path="/track" element={<TrackComplaints />} />
         <Route path="/login" element={<SignInForm />} />
-      {/*}  <Route path="/signup" element={<SignUpForm />} /> */}
+        <Route path="/signup" element={<SignUpForm />} />
       </Routes>
+      <div className="bottom-0">
+              <footer className="bg-gray-800 text-white text-center border-t border-gray-700 py-4 mt-auto ">
+                  <p>&copy; {new Date().getFullYear()} CampusCare. All rights reserved.</p>
+              </footer>
+
+        </div>
     </Router>
   );
 }

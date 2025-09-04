@@ -13,7 +13,7 @@ export default function LandingPage() {
       <header className="flex flex-col md:flex-row items-center justify-between flex-grow px-10 py-36  ">
         
         <div className="max-w-lg ">
-          <h2 className="text-4xl font-extrabold text-blue-300 mb-4">
+          <h2 className="text-4xl font-extrabold text-gray-800 mb-4">
             Welcome to CampusCare
           </h2>
           <p className="text-lg text-white mb-6">
@@ -171,15 +171,9 @@ export default function LandingPage() {
                     </div>
                 
         </div>
-        <div className="border-t border-white/20 mt-8 pt-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-200">
-            <p className=" text-centr gap-4">© {new Date().getFullYear()} CampusCare. All rights reserved.</p>
-        <div className="flex gap-4 mt-3 md:mt-0">
-            <a href="#" className="hover:text-blue-300">Facebook</a>
-            <a href="#" className="hover:text-blue-300">Twitter</a>
-            <a href="#" className="hover:text-blue-300">Instagram</a>
-        </div>
         
-        </div>
+        
+        
       </footer>
 
     </div>
