@@ -1,34 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Slidebar from "./Slidebar";
 
 
 export default function ComplaintForm() {
      const [anonymous, setAnonymous] =useState(false);
 
      return (
-        <div className="min-h screen bg-gray p-6">
+        <div className="min-h top-20 screen bg-gray px-26 py-16">
            {/* Navbar */}
-            
+            <Slidebar />
         {/* Tabs*/}
-         <div className="flex justify-center gap-6 mb-8">
-            <Link to="/submit"
-             className="px-6 py-2 rounded-full bg-black text-white flex items-center gap-2"
-             >Submit Complaint</Link>
-           
-            <Link 
-            to="/track"
-             className="px-6 py-2 rounded-full bg-gray-100 flex items-center gap-2"
-             >
-                Track Complaint
-            </Link>
-             <Link 
-            to="/cancel" 
-            className="px-6 py-2 rounded-full bg-black-100 text-color-white-100 flex items-center gap-2"
-            >
-                Cancel
-            </Link>
-            
-        </div>
+       
         {/* Complaint Form*/}
         <div className="max-w-3xl mx-auto bg-gray-100 p-6 rounded-2xl shadow">
             <div className="max-w-2xl mx-auto bg-white shadow p-6 rounded-2xl">

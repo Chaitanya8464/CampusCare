@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { Link } from "react-router-dom";
+import Slidebar from "./Slidebar";
 export default function TrackComplaints() {
     const[ticketId,setTicketId] = useState("");
     
@@ -40,30 +41,11 @@ export default function TrackComplaints() {
         }
     };
     return(
-         <div className="min-h-screen bg-white  p-6 flex items-center justify-center">
+         <div className="min-h-screen  p-6 flex items-center justify-center">
+           <Slidebar/>
            <div className="w-full max-w-3xl bg-gray shadow-lg rounded-lg">
             {/* Header Tab*/}
-            <div className="flex justify-center gap-6 mb-8">
-                <Link 
-                to="/submit" 
-                className="px-6 py-2 rounded-full bg-white text-black flex items-center gap-2"
-                >
-                Submit Complaint
-                </Link>
-            
-                <Link 
-                to="/track" 
-                className="px-6 py-2 rounded-full bg-black text-white flex items-center gap-2"
-                >
-                Track Complaint
-                </Link>
-                <Link 
-                to="/cancel" 
-                className="px-6 py-2 rounded-full bg-gray-100 flex items-center gap-2"
-                >
-                Cancel
-                </Link>
-            </div>
+           
             {/* Search */}
             <div className="bg-white p-4 rounded-lg shadow mb-6">
                 <h2 className="text-lg font-semibold mb-2">Track Your Complaint</h2>
