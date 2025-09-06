@@ -5,8 +5,7 @@ import ComplaintForm from "./components/ComplaintForm";
 import TrackComplaints from "./components/TrackComplaints";
 import login from "./pages/SignInForm";
 import signup from "./pages/SignUpForm";
-import LandingPage from "./LandingPage/landing"
-import About from "./pages/About"
+import LandingPage from "./LandingPage/landing";
 
 
   
@@ -24,7 +23,7 @@ export default function App() {
         <Route path="/track" element={<TrackComplaints />} />
         <Route path="/login" element={<SignInForm />} />
         <Route path="/signup" element={<SignUpForm />} />
-        <Route path="/about" element={<About/>}/>
+        
       </Routes>
       <div className="bottom-0">
               <footer className="bg-gray-800 text-white text-center border-t border-gray-700 py-4 mt-auto ">

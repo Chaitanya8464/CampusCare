@@ -7,3 +7,14 @@ body {
     background: linear-gradient(to bottom right, #6B7280, #f3f4f6);
 
 }
+.perspective {
+  perspective: 1000px;
+}
+
+.rotate-y-0 {
+  transform: rotateY(0deg);
+}
+
+.rotate-y-90 {
+  transform: rotateY(90deg);
+}
