@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import Slidebar from "./Slidebar";
-import { db } from "../firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ComplaintForm() {
   const [anonymous, setAnonymous] = useState(false);
@@ -19,6 +16,11 @@ export default function ComplaintForm() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
 
+  // UI states
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
   const options = {
     Academics: ["Assignments", "Exams", "Result", "Syllabus"],
     Facilities: ["Hostel", "Classroom", "Library", "Labs"],
@@ -34,24 +36,24 @@ export default function ComplaintForm() {
   };
 
   // Generate Ticket ID
-  const generateTicketId = () => {
-    return "CMP-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
-  };
+  const generateTicketId = () =>
+    "CMP-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
 
   // File validation
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (selected && selected.size <= 1024 * 1024) {
       setFile(selected);
+      setErrorMsg("");
     } else {
-      alert("File must be PDF/JPEG and under 1MB.");
+      setErrorMsg("File must be PDF/JPEG and under 1MB.");
     }
   };
 
   // OTP mock
   const handleOtpRequest = () => {
     if (!otpMethod) {
-      alert("Please select Mobile or Email to receive OTP.");
+      setErrorMsg("Please select Mobile or Email to receive OTP.");
       return;
     }
     alert(`OTP sent to your ${otpMethod}`);
@@ -60,6 +62,11 @@ export default function ComplaintForm() {
   // Submit complaint
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+    setTicketId("");
+
     try {
       const newTicketId = generateTicketId();
 
@@ -74,12 +81,12 @@ export default function ComplaintForm() {
         description,
         anonymous,
         otpMethod,
-        fileName: file ? file.name : null, // storing only file name
+        fileName: file ? file.name : null,
         createdAt: serverTimestamp(),
       });
 
       setTicketId(newTicketId);
-      alert(`✅ Complaint submitted! Ticket ID: ${newTicketId}`);
+      setSuccessMsg(`✅ Complaint submitted! Ticket ID: ${newTicketId}`);
 
       // Reset form
       setAnonymous(false);
@@ -92,15 +99,38 @@ export default function ComplaintForm() {
       setDescription("");
       setOtpMethod("");
       setFile(null);
+
+      // Clear success after 5s
+      setTimeout(() => setSuccessMsg(""), 5000);
     } catch (err) {
-      alert("❌ Failed to submit: " + err.message);
+      setErrorMsg("❌ Failed to submit: " + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 px-6 py-16">
-      {/* Sidebar */}
+    <div className="min-h-screen bg-gray-100 px-6 py-16 relative">
       <Slidebar />
+
+      {/* Loader Overlay */}
+      {loading && (
+        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+
+      {/* Toast Messages */}
+      {successMsg && (
+        <div className="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50">
+          {successMsg}
+        </div>
+      )}
+      {errorMsg && (
+        <div className="fixed top-5 right-5 bg-red-600 text-white px-4 py-2 rounded shadow-lg z-50">
+          {errorMsg}
+        </div>
+      )}
 
       {/* Complaint Form */}
       <form
@@ -315,16 +345,11 @@ export default function ComplaintForm() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full mt-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
+          disabled={loading}
+          className="w-full mt-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
         >
-          Submit Complaint
+          {loading ? "Submitting..." : "Submit Complaint"}
         </button>
-
-        {ticketId && (
-          <p className="mt-4 text-green-600 font-medium">
-            ✅ Complaint submitted successfully! Ticket ID: {ticketId}
-          </p>
-        )}
       </form>
     </div>
   );

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Slidebar from "./Slidebar";
-import { db } from "../firebase";
-import { collection, query, orderBy, limit, getDocs, where } from "firebase/firestore";
+
 
 export default function TrackComplaints() {
   const [ticketId, setTicketId] = useState("");

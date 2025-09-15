@@ -4,6 +4,8 @@ import facebook from "../assets/facebook.png";
 import google from "../assets/google.png";
 import github from "../assets/github.png";
 import { auth } from "../firebase";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import  app  from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function SignInForm(){
     const [email, setEmail]= useState("");
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
     const [slide, setSlide]=useState(false)
     const [password,setPassword]= useState("");
     const [message, setMessage]= useState("");
@@ -24,6 +28,17 @@ export default function SignInForm(){
         setSlide(true);
         setTimeout(()=> swapNavigation("/signup"),600);
     }
+
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            // User info
+            const user = result.user;
+            console.log("User signed in:", user);
+        } catch (error) {
+            console.error("Error during sign-in:", error);
+        }
+    };
 
     const handleSignIn =async (e) =>{
         e.preventDefault();
@@ -56,14 +71,16 @@ export default function SignInForm(){
                    <div className="h-full w-1/2 flex flex-col justify-center text-center opacity-100 ml-80 px-8 py-20 shadow-blue-500 shadow-lg rounded-lg bg-gradient-to-br from-gray-500 to-white-600">
                        <h1 className="text-2xl font-bold text-white">SignIn</h1>
                        <div className="flex gap-3 my-4 justify-center items-center">
-                        <a href="#"
+                        <a href="#x"
                         className="border rounded-full h-10 w-10 flex items-center justify-center hover:rotate-12 transition">
                             <img src={github} alt="github" className="w-10 h-10 rounded-full" />
                         </a>
-                        <a href="#" 
-                        className="h-10 w-10 border rounded-full flex items-center justify-center hover:rotate-12 transition">
-                            <img src={google} alt="google" className="w-10 h-10 rounded-full"></img>
-                        </a>
+                        <button 
+                            onClick={handleGoogleLogin}
+                            className="h-10 w-10 border rounded-full flex items-center justify-center hover:rotate-12 transition"
+                        >
+                            <img src={google} alt="google" className="w-10 h-10 rounded-full" />
+                        </button>
                         <a href="#"
                         className="border rounded-full w-10 h-10 flex items-center justify-center hover:rotate-12 transition">
                             <img src={facebook} alt="facebook" className="w-10 h-10 rounded-full" />
