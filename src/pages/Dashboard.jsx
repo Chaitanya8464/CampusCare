@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { db, auth } from "../firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Slidebar from "../components/Slidebar";
 
@@ -16,7 +16,7 @@ export default function Dashboard() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        await fetchUserComplaints(currentUser.email);
+        await fetchUserComplaints(currentUser);
       }
       setLoading(false);
     });
@@ -24,22 +24,43 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
-  const fetchUserComplaints = async (email) => {
+  const fetchUserComplaints = async (currentUser) => {
     try {
-      const q = query(collection(db, "complaints"), where("contact", "==", email));
-      const snapshot = await getDocs(q);
-      const complaintsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setComplaints(complaintsData);
+      console.log("=== FETCHING COMPLAINTS ===");
+      console.log("Current user:", currentUser.email);
+      console.log("Current user UID:", currentUser.uid);
       
+      // Query all complaints
+      const q = query(collection(db, "complaints"));
+      const snapshot = await getDocs(q);
+      
+      let complaintsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      console.log("Total complaints in Firestore:", complaintsData.length);
+      console.log("All complaints:", complaintsData);
+      
+      // Filter complaints for this user by:
+      // 1. userEmail field (new complaints)
+      // 2. contact field matching email (old complaints)
+      const userComplaints = complaintsData.filter(c => 
+        c.userEmail === currentUser.email || 
+        c.contact === currentUser.email
+      );
+      
+      console.log("Filtered user complaints:", userComplaints.length);
+      console.log("User complaints data:", userComplaints);
+      
+      setComplaints(userComplaints);
+
       setStats({
-        total: complaintsData.length,
-        pending: complaintsData.filter(c => c.status === "Pending").length,
-        inProgress: complaintsData.filter(c => c.status === "In Progress").length,
-        resolved: complaintsData.filter(c => c.status === "Resolved").length
+        total: userComplaints.length,
+        pending: userComplaints.filter(c => c.status === "Pending").length,
+        inProgress: userComplaints.filter(c => c.status === "In Progress").length,
+        resolved: userComplaints.filter(c => c.status === "Resolved").length
       });
       setOfflineMode(false);
     } catch (error) {
-      console.warn("Could not fetch complaints (possibly offline):", error.message);
+      console.error("Could not fetch complaints:", error.message, error.code);
       setOfflineMode(true);
     }
   };
