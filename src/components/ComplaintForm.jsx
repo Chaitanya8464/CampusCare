@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Slidebar from "./Slidebar";
+import { db } from "../firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ComplaintForm() {
   const [anonymous, setAnonymous] = useState(false);
@@ -7,7 +9,6 @@ export default function ComplaintForm() {
   const [subIssue, setSubIssue] = useState("");
   const [otpMethod, setOtpMethod] = useState("");
   const [file, setFile] = useState(null);
-  const [ticketId, setTicketId] = useState("");
 
   // Complaint details
   const [contact, setContact] = useState("");
@@ -65,7 +66,6 @@ export default function ComplaintForm() {
     setLoading(true);
     setErrorMsg("");
     setSuccessMsg("");
-    setTicketId("");
 
     try {
       const newTicketId = generateTicketId();
@@ -85,7 +85,6 @@ export default function ComplaintForm() {
         createdAt: serverTimestamp(),
       });
 
-      setTicketId(newTicketId);
       setSuccessMsg(`✅ Complaint submitted! Ticket ID: ${newTicketId}`);
 
       // Reset form
@@ -110,7 +109,7 @@ export default function ComplaintForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 px-6 py-16 relative">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 px-6 py-16 relative transition-colors duration-300">
       <Slidebar />
 
       {/* Loader Overlay */}
@@ -135,10 +134,10 @@ export default function ComplaintForm() {
       {/* Complaint Form */}
       <form
         onSubmit={handleSubmit}
-        className="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow"
+        className="max-w-3xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-2xl shadow transition-colors duration-300"
       >
-        <h2 className="text-lg font-semibold mb-2">Submit a Grievance</h2>
-        <p className="text-gray-500 mb-4">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Submit a Grievance</h2>
+        <p className="text-gray-500 dark:text-gray-400 mb-4">
           Report any issue or concern you have regarding campus facilities,
           services, or policies.
         </p>
@@ -146,8 +145,8 @@ export default function ComplaintForm() {
         {/* Anonymous Toggle */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-medium">Anonymous Submission</h3>
-            <p className="text-gray-500 text-sm">
+            <h3 className="font-medium text-gray-800 dark:text-white">Anonymous Submission</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
               Your identity will be kept confidential.
             </p>
           </div>
@@ -158,7 +157,7 @@ export default function ComplaintForm() {
               checked={anonymous}
               onChange={() => setAnonymous(!anonymous)}
             />
-            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-black"></div>
+            <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full peer peer-checked:bg-black"></div>
             <div
               className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition ${
                 anonymous ? "translate-x-5" : ""
@@ -170,7 +169,7 @@ export default function ComplaintForm() {
         {/* Contact Info */}
         {!anonymous && (
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
               Contact Information <span className="text-red-500">*</span>
             </label>
             <input
@@ -178,7 +177,7 @@ export default function ComplaintForm() {
               value={contact}
               onChange={(e) => setContact(e.target.value)}
               placeholder="Email or Phone Number"
-              className="w-full border rounded-lg p-2 mb-3"
+              className="w-full border rounded-lg p-2 mb-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white dark:border-gray-600"
               required
             />
           </div>
@@ -186,11 +185,11 @@ export default function ComplaintForm() {
 
         {/* Issue Regarding */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white">
             Issue Regarding<span className="text-red-500">*</span>
           </label>
           <select
-            className="w-full border rounded-lg p-2 mb-3"
+            className="w-full border rounded-lg p-2 mb-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white dark:border-gray-600"
             value={issueRegarding}
             onChange={(e) => {
               setIssueRegarding(e.target.value);
@@ -210,11 +209,11 @@ export default function ComplaintForm() {
         {/* Sub-Issue */}
         {issueRegarding && (
           <div className="space-y-2">
-            <label className="block text-sm font-medium">
+            <label className="block text-sm font-medium text-gray-800 dark:text-white">
               Related Issue<span className="text-red-500">*</span>
             </label>
             <select
-              className="w-full border rounded-lg p-2 mb-3"
+              className="w-full border rounded-lg p-2 mb-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white dark:border-gray-600"
               value={subIssue}
               onChange={(e) => setSubIssue(e.target.value)}
               required
@@ -231,7 +230,7 @@ export default function ComplaintForm() {
 
         {/* Complaint Title */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white">
             Complaint Title<span className="text-red-500">*</span>
           </label>
           <input
@@ -239,20 +238,20 @@ export default function ComplaintForm() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Complaint title"
-            className="w-full border rounded-lg p-2 mb-3"
+            className="w-full border rounded-lg p-2 mb-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white dark:border-gray-600"
             required
           />
         </div>
 
         {/* Priority Level */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white">
             Priority Level<span className="text-red-500">*</span>
           </label>
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            className="w-full border rounded-lg p-2 mb-3"
+            className="w-full border rounded-lg p-2 mb-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white dark:border-gray-600"
             required
           >
             <option value="">Select priority level</option>
@@ -264,7 +263,7 @@ export default function ComplaintForm() {
 
         {/* Location */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white">
             Location<span className="text-red-500">*</span>
           </label>
           <input
@@ -272,28 +271,28 @@ export default function ComplaintForm() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="Location"
-            className="w-full border rounded-lg p-2 mb-3"
+            className="w-full border rounded-lg p-2 mb-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white dark:border-gray-600"
             required
           />
         </div>
 
         {/* File Upload */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white">
             Upload File (pdf/jpeg, Max 1MB)
           </label>
           <input
             type="file"
             accept=".pdf,.jpeg,.jpg"
             onChange={handleFileChange}
-            className="w-full border rounded-lg p-2 mb-3"
+            className="w-full border rounded-lg p-2 mb-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white dark:border-gray-600"
           />
-          {file && <p className="text-green-600 text-sm">File: {file.name}</p>}
+          {file && <p className="text-green-600 dark:text-green-400 text-sm">File: {file.name}</p>}
         </div>
 
         {/* Detailed Description */}
         <div>
-          <label className="block text-sm font-medium">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white">
             Detailed Description<span className="text-red-500">*</span>
           </label>
           <textarea
@@ -301,18 +300,18 @@ export default function ComplaintForm() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Provide a detailed description of your complaint..."
-            className="w-full border rounded-lg p-2 mb-4"
+            className="w-full border rounded-lg p-2 mb-4 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white dark:border-gray-600"
             required
           />
         </div>
 
         {/* OTP Section */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white">
             Receive OTP on<span className="text-red-500">*</span>
           </label>
           <div className="flex items-center gap-4">
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 text-gray-800 dark:text-white">
               <input
                 type="radio"
                 name="otp"
@@ -322,7 +321,7 @@ export default function ComplaintForm() {
               />
               Mobile
             </label>
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 text-gray-800 dark:text-white">
               <input
                 type="radio"
                 name="otp"
@@ -346,7 +345,7 @@ export default function ComplaintForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full mt-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+          className="w-full mt-6 py-2 bg-black dark:bg-gray-700 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 transition-colors duration-300"
         >
           {loading ? "Submitting..." : "Submit Complaint"}
         </button>
