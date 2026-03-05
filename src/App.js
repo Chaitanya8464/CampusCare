@@ -24,6 +24,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import AdminDashboard from "./pages/AdminDashboard";
+import FirebaseTest from "./pages/FirebaseTest";
 
 // Protected Route
 import ProtectedRoute from "./pages/ProtectedRoute";
@@ -49,6 +50,7 @@ export default function App() {
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/help" element={<Help />} />
+                <Route path="/test-firebase" element={<FirebaseTest />} />
 
                 {/* Protected Routes */}
                 <Route
