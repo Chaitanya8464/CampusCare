@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Slidebar from "./Slidebar";
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ComplaintForm() {
@@ -63,16 +63,45 @@ export default function ComplaintForm() {
   // Submit complaint
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!issueRegarding || !subIssue || !title || !priority || !location || !description) {
+      setErrorMsg("❌ Please fill in all required fields.");
+      return;
+    }
+
     setLoading(true);
     setErrorMsg("");
     setSuccessMsg("");
 
-    try {
+    console.log("=== SUBMITTING COMPLAINT ===");
+    console.log("Current user email:", auth.currentUser?.email);
+    console.log("Contact that will be saved:", anonymous ? null : contact);
+    console.log("Form data:", {
+      issueRegarding,
+      subIssue,
+      title,
+      priority,
+      location,
+      description,
+      anonymous,
+      contact: anonymous ? null : contact
+    });
+
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Request timeout. Please check your internet connection.")), 10000);
+    });
+
+    // Create the submit promise
+    const submitPromise = (async () => {
       const newTicketId = generateTicketId();
 
-      await addDoc(collection(db, "complaints"), {
+      console.log("Creating document in Firestore...");
+      const docData = {
         ticketId: newTicketId,
         contact: anonymous ? null : contact,
+        userEmail: auth.currentUser?.email, // Add user email for easier querying
         issueRegarding,
         subIssue,
         title,
@@ -83,7 +112,19 @@ export default function ComplaintForm() {
         otpMethod,
         fileName: file ? file.name : null,
         createdAt: serverTimestamp(),
-      });
+        status: "Pending", // Explicitly set default status
+      };
+      console.log("Document data:", docData);
+
+      const docRef = await addDoc(collection(db, "complaints"), docData);
+      console.log("✅ Document written with ID:", docRef.id);
+
+      return newTicketId;
+    })();
+
+    try {
+      // Race between submit and timeout
+      const newTicketId = await Promise.race([submitPromise, timeoutPromise]);
 
       setSuccessMsg(`✅ Complaint submitted! Ticket ID: ${newTicketId}`);
 
@@ -102,7 +143,23 @@ export default function ComplaintForm() {
       // Clear success after 5s
       setTimeout(() => setSuccessMsg(""), 5000);
     } catch (err) {
-      setErrorMsg("❌ Failed to submit: " + err.message);
+      console.error("Submit error:", err);
+      console.error("Error code:", err.code);
+      console.error("Error type:", err.type);
+      
+      let errorMessage = "❌ Failed to submit: " + err.message;
+      
+      if (err.message.includes("timeout")) {
+        errorMessage = "⚠️ Request timeout. Please check your internet connection.";
+      } else if (err.code === "permission-denied") {
+        errorMessage = "🔒 Permission denied. Please check Firestore security rules.";
+      } else if (err.code === "unavailable") {
+        errorMessage = "⚠️ Firestore is unavailable. Please try again later.";
+      } else if (err.message.includes("offline")) {
+        errorMessage = "⚠️ You appear to be offline. Please check your connection.";
+      }
+      
+      setErrorMsg(errorMessage);
     } finally {
       setLoading(false);
     }
