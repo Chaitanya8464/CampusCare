@@ -3,13 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import facebook from "../assets/facebook.png";
 import google from "../assets/google.png";
 import github from "../assets/github.png";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginAs, setLoginAs] = useState("student");
   const [message, setMessage] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const navigate = useNavigate();
 
   const provider = new GoogleAuthProvider();
@@ -25,12 +28,55 @@ export default function SignInForm() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setIsLoggingIn(true);
+    setMessage("");
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      setMessage("Login Successful");
-      setTimeout(() => navigate("/"), 1500);
+      // Sign in with email and password
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Fetch user role from Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        const userRole = userData.role || "student";
+
+        // Check if selected role matches actual user role
+        if (loginAs !== userRole) {
+          // Sign out the user
+          await auth.signOut();
+          setMessage(`❌ This account is registered as ${userRole}, not ${loginAs}.`);
+          setIsLoggingIn(false);
+          return;
+        }
+
+        setMessage("✅ Login Successful!");
+        
+        // Redirect based on actual role
+        if (userRole === "admin") {
+          setTimeout(() => navigate("/admin"), 1500);
+        } else {
+          setTimeout(() => navigate("/"), 1500);
+        }
+      } else {
+        // No user document - treat as student
+        if (loginAs !== "student") {
+          await auth.signOut();
+          setMessage("❌ This account is not registered as admin.");
+          setIsLoggingIn(false);
+          return;
+        }
+        setMessage("✅ Login Successful!");
+        setTimeout(() => navigate("/"), 1500);
+      }
     } catch (err) {
+      console.error("Login error:", err);
       setMessage("Login failed: " + err.message);
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -90,15 +136,45 @@ export default function SignInForm() {
               required
             />
 
+            {/* Login As Selection */}
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2">Login as:</p>
+              <div className="flex gap-4">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="loginAs"
+                    value="student"
+                    checked={loginAs === "student"}
+                    onChange={(e) => setLoginAs(e.target.value)}
+                    className="mr-2"
+                  />
+                  <span className="text-sm text-gray-700">Student</span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="loginAs"
+                    value="admin"
+                    checked={loginAs === "admin"}
+                    onChange={(e) => setLoginAs(e.target.value)}
+                    className="mr-2"
+                  />
+                  <span className="text-sm text-gray-700">Admin</span>
+                </label>
+              </div>
+            </div>
+
             <a href="#forgot" className="text-sm text-green-600 block text-right mb-4 hover:underline">
               Forgot Password?
             </a>
 
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white rounded-full px-4 py-2 mb-2 hover:bg-blue-600 transition"
+              disabled={isLoggingIn}
+              className="w-full bg-blue-500 text-white rounded-full px-4 py-2 mb-2 hover:bg-blue-600 transition disabled:opacity-50"
             >
-              Sign In
+              {isLoggingIn ? "Signing In..." : "Sign In"}
             </button>
 
             {message && (
