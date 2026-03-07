@@ -21,13 +21,15 @@ export const AuthProvider = ({ children }) => {
           const docRef = doc(db, "users", currentUser.uid);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            setRole(docSnap.data().role);
+            const userData = docSnap.data();
+            setRole(userData.role || "student");
           } else {
-            setRole("student"); // Default role
+            // If no user document exists, create one with student role
+            setRole("student");
           }
         } catch (error) {
-          console.warn("Could not fetch user role (possibly offline):", error.message);
-          setRole("student"); // Default role if offline
+          console.warn("Could not fetch user role:", error.message);
+          setRole("student");
         }
       } else {
         setUser(null);

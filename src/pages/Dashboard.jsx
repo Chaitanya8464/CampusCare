@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { db, auth } from "../firebase";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Slidebar from "../components/Slidebar";
 
@@ -29,34 +29,26 @@ export default function Dashboard() {
       console.log("=== FETCHING COMPLAINTS ===");
       console.log("Current user:", currentUser.email);
       console.log("Current user UID:", currentUser.uid);
-      
-      // Query all complaints
-      const q = query(collection(db, "complaints"));
-      const snapshot = await getDocs(q);
-      
-      let complaintsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      
-      console.log("Total complaints in Firestore:", complaintsData.length);
-      console.log("All complaints:", complaintsData);
-      
-      // Filter complaints for this user by:
-      // 1. userEmail field (new complaints)
-      // 2. contact field matching email (old complaints)
-      const userComplaints = complaintsData.filter(c => 
-        c.userEmail === currentUser.email || 
-        c.contact === currentUser.email
+
+      // Query only complaints for this user
+      const q = query(
+        collection(db, "complaints"),
+        where("userEmail", "==", currentUser.email)
       );
-      
-      console.log("Filtered user complaints:", userComplaints.length);
-      console.log("User complaints data:", userComplaints);
-      
-      setComplaints(userComplaints);
+      const snapshot = await getDocs(q);
+
+      let complaintsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      console.log("User complaints fetched:", complaintsData.length);
+      console.log("User complaints data:", complaintsData);
+
+      setComplaints(complaintsData);
 
       setStats({
-        total: userComplaints.length,
-        pending: userComplaints.filter(c => c.status === "Pending").length,
-        inProgress: userComplaints.filter(c => c.status === "In Progress").length,
-        resolved: userComplaints.filter(c => c.status === "Resolved").length
+        total: complaintsData.length,
+        pending: complaintsData.filter(c => c.status === "Pending").length,
+        inProgress: complaintsData.filter(c => c.status === "In Progress").length,
+        resolved: complaintsData.filter(c => c.status === "Resolved").length
       });
       setOfflineMode(false);
     } catch (error) {
