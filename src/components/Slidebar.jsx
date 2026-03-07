@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../pages/AuthContext";
 
 export default function Slidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { role } = useAuth();
 
   return (
     <div className="flex">
@@ -34,24 +36,37 @@ export default function Slidebar() {
                 <span>👤</span> {isOpen && <span className="text-gray-200">Profile</span>}
               </Link>
             </li>
-            <li>
-              <Link to="/dashboard" className="hover:text-blue-400 flex items-center gap-2">
-                <span>📊</span> {isOpen && <span className="text-gray-200">Dashboard</span>}
-              </Link>
-            </li>
+            
+            {/* Admin Dashboard Link - Only for admins */}
+            {role === "admin" ? (
+              <li>
+                <Link to="/admin" className="hover:text-blue-400 flex items-center gap-2">
+                  <span>🎯</span> {isOpen && <span className="text-gray-200">Admin Dashboard</span>}
+                </Link>
+              </li>
+            ) : (
+              <>
+                <li>
+                  <Link to="/dashboard" className="hover:text-blue-400 flex items-center gap-2">
+                    <span>📊</span> {isOpen && <span className="text-gray-200">Dashboard</span>}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/submit" className="hover:text-blue-400 flex items-center gap-2">
+                    <span>📄</span> {isOpen && <span className="text-gray-200">Submit Complaint</span>}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/track" className="hover:text-blue-400 flex items-center gap-2">
+                    <span>🔍</span> {isOpen && <span className="text-gray-200">My Complaints</span>}
+                  </Link>
+                </li>
+              </>
+            )}
+            
             <li>
               <Link to="/settings" className="hover:text-blue-400 flex items-center gap-2">
                 <span>⚙️</span> {isOpen && <span className="text-gray-200">Settings</span>}
-              </Link>
-            </li>
-            <li>
-              <Link to="/submit" className="hover:text-blue-400 flex items-center gap-2">
-                <span>📄</span> {isOpen && <span className="text-gray-200">Submit</span>}
-              </Link>
-            </li>
-            <li>
-              <Link to="/track" className="hover:text-blue-400 flex items-center gap-2">
-                <span>🔍</span> {isOpen && <span className="text-gray-200">Track Complaint</span>}
               </Link>
             </li>
             <li>
