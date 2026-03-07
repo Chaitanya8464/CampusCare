@@ -435,9 +435,7 @@ export default function LandingPage() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} CampusCare. All rights reserved.</p>
-          </div>
+         
         </div>
       </footer>
     </div>
