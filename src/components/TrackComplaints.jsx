@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from "react";
 import Slidebar from "./Slidebar";
-import { db } from "../firebase";
-import { collection, query, orderBy, limit, getDocs, where } from "firebase/firestore";
+import { db, auth } from "../firebase";
+import { collection, query, orderBy, limit, getDocs, where, deleteDoc, doc } from "firebase/firestore";
 
 export default function TrackComplaints() {
   const [ticketId, setTicketId] = useState("");
   const [complaints, setComplaints] = useState([]);
   const [searchResult, setSearchResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch recent complaints
+    // Fetch recent complaints for the current user only
     const fetchRecentComplaints = async () => {
       try {
+        const currentUserEmail = auth.currentUser?.email;
+
+        if (!currentUserEmail) {
+          console.warn("No user logged in");
+          setComplaints([]);
+          return;
+        }
+
         const q = query(
           collection(db, "complaints"),
+          where("userEmail", "==", currentUserEmail),
           orderBy("createdAt", "desc"),
           limit(5)
         );
         const snapshot = await getDocs(q);
-        setComplaints(snapshot.docs.map((doc) => doc.data()));
+        setComplaints(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       } catch (err) {
         console.error("Error fetching complaints:", err);
       }
@@ -49,18 +59,47 @@ export default function TrackComplaints() {
     try {
       const q = query(
         collection(db, "complaints"),
-        where("ticketId", "==", ticketId)
+        where("ticketId", "==", ticketId),
+        where("userEmail", "==", auth.currentUser?.email)
       );
       const snapshot = await getDocs(q);
 
       if (!snapshot.empty) {
-        setSearchResult(snapshot.docs[0].data());
+        const doc = snapshot.docs[0];
+        setSearchResult({ ...doc.data(), id: doc.id });
       } else {
         setSearchResult(null);
         alert("❌ No complaint found with this Ticket ID.");
       }
     } catch (err) {
       console.error("Error searching complaint:", err);
+      if (err.code === "failed-precondition") {
+        alert("⚠️ Index required. Please check console for index creation link.");
+      } else {
+        alert("❌ Search failed: " + err.message);
+      }
+    }
+  };
+
+  const handleDelete = async (complaintId, ticketId) => {
+    if (!window.confirm(`Are you sure you want to delete complaint ${ticketId}? This action cannot be undone.`)) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await deleteDoc(doc(db, "complaints", complaintId));
+      // Remove from local state
+      setComplaints(complaints.filter(c => c.id !== complaintId));
+      if (searchResult && searchResult.id === complaintId) {
+        setSearchResult(null);
+      }
+      alert("✅ Complaint deleted successfully!");
+    } catch (err) {
+      console.error("Error deleting complaint:", err);
+      alert("❌ Failed to delete complaint. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,7 +130,16 @@ export default function TrackComplaints() {
         {/* Search Result */}
         {searchResult && (
           <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6 transition-colors duration-300">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Complaint Details</h2>
+            <div className="flex justify-between items-start mb-2">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Complaint Details</h2>
+              <button
+                onClick={() => handleDelete(searchResult.id, searchResult.ticketId)}
+                disabled={loading}
+                className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50 transition-colors duration-300"
+              >
+                Delete
+              </button>
+            </div>
             <p className="font-medium text-gray-800 dark:text-white">
               {searchResult.title}{" "}
               <span
@@ -112,40 +160,53 @@ export default function TrackComplaints() {
 
         {/* Recent Complaints */}
         <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors duration-300">
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Recent Complaints</h2>
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">My Complaints</h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm mb-3">
-            Latest complaints you have submitted.
+            Your recently submitted complaints.
           </p>
           <div className="space-y-3">
-            {complaints.map((c, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-start border dark:border-gray-600 rounded-lg p-4 hover:shadow transition-colors duration-300"
-              >
-                <div>
-                  <p className="font-medium text-gray-800 dark:text-white">
-                    {c.title}{" "}
-                    <span
-                      className={`ml-2 px-2 py-1 text-xs rounded-full ${getStatusColor(
-                        c.status || "Pending"
-                      )}`}
-                    >
-                      {c.status || "Pending"}
-                    </span>
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    ID: {c.ticketId} • {c.issueRegarding} •{" "}
-                    {c.createdAt?.toDate().toLocaleDateString()}
-                  </p>
-                </div>
-                <button
-                  className="text-blue-600 dark:text-blue-400 hover:underline"
-                  onClick={() => setSearchResult(c)}
+            {complaints.length === 0 ? (
+              <p className="text-gray-500 dark:text-gray-400 text-center py-4">No complaints found.</p>
+            ) : (
+              complaints.map((c, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-start border dark:border-gray-600 rounded-lg p-4 hover:shadow transition-colors duration-300"
                 >
-                  View
-                </button>
-              </div>
-            ))}
+                  <div>
+                    <p className="font-medium text-gray-800 dark:text-white">
+                      {c.title}{" "}
+                      <span
+                        className={`ml-2 px-2 py-1 text-xs rounded-full ${getStatusColor(
+                          c.status || "Pending"
+                        )}`}
+                      >
+                        {c.status || "Pending"}
+                      </span>
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      ID: {c.ticketId} • {c.issueRegarding} •{" "}
+                      {c.createdAt?.toDate().toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                      onClick={() => setSearchResult(c)}
+                    >
+                      View
+                    </button>
+                    <button
+                      className="text-red-600 dark:text-red-400 hover:underline"
+                      onClick={() => handleDelete(c.id, c.ticketId)}
+                      disabled={loading}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
