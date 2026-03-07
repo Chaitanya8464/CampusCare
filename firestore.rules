@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to get user email from auth
+    function getUserEmail() {
+      return request.auth.token.email;
+    }
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Complaints collection rules
+    match /complaints/{complaintId} {
+      // Allow read if the complaint belongs to the authenticated user OR if user is admin
+      allow read: if isAuthenticated() && (resource.data.userEmail == getUserEmail() || isAdmin());
+
+      // Allow create if authenticated
+      allow create: if isAuthenticated();
+
+      // Allow update if the complaint belongs to the authenticated user OR if user is admin
+      allow update: if isAuthenticated() && (resource.data.userEmail == getUserEmail() || isAdmin());
+
+      // Allow delete if the complaint belongs to the authenticated user OR if user is admin
+      allow delete: if isAuthenticated() && (resource.data.userEmail == getUserEmail() || isAdmin());
+    }
+
+    // Users collection rules
+    match /users/{userId} {
+      // Allow users to read their own data
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+
+      // Allow users to update their own data
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+    }
+  }
+}
