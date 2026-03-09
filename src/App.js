@@ -7,6 +7,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import Navbar from "./components/Navbar";
 import ComplaintForm from "./components/ComplaintForm";
 import TrackComplaints from "./components/TrackComplaints";
+import LaxiAssistant from "./components/LaxiAssistant";
 
 // Pages
 import LandingPage from "./LandingPage/landing";
@@ -110,6 +111,9 @@ export default function App() {
             <footer className="bg-gray-800 dark:bg-gray-900 text-white text-center border-t border-gray-700 py-4 mt-auto">
               <p>&copy; {new Date().getFullYear()} CampusCare. All rights reserved.</p>
             </footer>
+
+            {/* Laxi AI Assistant */}
+            <LaxiAssistant />
           </div>
         </Router>
       </AuthProvider>
