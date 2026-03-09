@@ -46,12 +46,12 @@ export default function SignInForm() {
 
         if (loginAs !== userRole) {
           await auth.signOut();
-          setMessage(`❌ This account is registered as ${userRole}, not ${loginAs}.`);
+          setMessage(` This account is registered as ${userRole}, not ${loginAs}.`);
           setIsLoggingIn(false);
           return;
         }
 
-        setMessage("✅ Login Successful!");
+        setMessage(" Login Successful!");
 
         if (userRole === "admin") {
           setTimeout(() => navigate("/admin"), 1500);
@@ -61,12 +61,12 @@ export default function SignInForm() {
       } else {
         if (loginAs !== "student") {
           await auth.signOut();
-          setMessage("❌ This account is not registered as admin.");
+          setMessage("This account is not registered as admin.");
           setIsLoggingIn(false);
           return;
         }
-        setMessage("✅ Login Successful!");
-        setTimeout(() => navigate("/"), 1500);
+        setMessage("Login Successful!");
+        setTimeout(() => navigate("/dashboard"), 1500);
       }
     } catch (err) {
       console.error("Login error:", err);
