@@ -365,8 +365,8 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800"></div>
+      <section className="py-24 px-6 relative overflow-hidden ">
+        <div className="absolute inset-0 "></div>
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-300 rounded-full blur-3xl"></div>
@@ -379,10 +379,10 @@ export default function LandingPage() {
           transition={{ duration: 0.6 }}
           className="relative z-10 max-w-4xl mx-auto text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-600 dark:text-gray-300 mb-6">
             Ready to Make a Difference?
           </h2>
-          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-blue-100 text-gray-600 dark:text-gray-300  mb-10 max-w-2xl mx-auto">
             Join thousands of students who are actively improving their campus experience. 
             Your voice matters – let's make it heard together.
           </p>
@@ -395,7 +395,7 @@ export default function LandingPage() {
             </Link>
             <Link
               to="/login"
-              className="px-8 py-4 bg-transparent text-white font-semibold rounded-xl border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-300 hover:scale-105"
+              className="px-8 py-4 bg-transparent text-gray-600 dark:text-gray-300  font-semibold rounded-xl border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-300 hover:scale-105"
             >
               Sign In
             </Link>
