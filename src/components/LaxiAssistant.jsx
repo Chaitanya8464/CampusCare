@@ -14,7 +14,6 @@ const LaxiAssistant = () => {
   const chatBoxRef = useRef(null);
   const buttonRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Click outside handler to minimize Laxi
   useEffect(() => {
