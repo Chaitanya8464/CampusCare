@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LaxiAssistant = () => {
@@ -240,10 +240,9 @@ const LaxiAssistant = () => {
           <motion.div
             ref={chatBoxRef}
             initial={{ opacity: 0, scale: 0.8, y: 100 }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1, 
-              y: 0,
+            animate={{
+              opacity: 1,
+              scale: 1,
               x: position.x,
               y: position.y || 0
             }}
