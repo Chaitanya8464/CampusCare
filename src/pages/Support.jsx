@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 
 export default function Support() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-24 pb-12 px-6 transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 dark:text-white text-center mb-4">Support Center</h1>
         <p className="text-gray-600 dark:text-gray-300 text-center mb-12">
-          We're here to help you with any issues or questions you may have.
+          We are here to help you with any issues or questions you may have.
         </p>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
@@ -30,7 +30,7 @@ export default function Support() {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center transition-colors duration-300">
             <div className="text-4xl mb-4">📧</div>
             <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">Email Support</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">Send us an email and we'll get back to you.</p>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">Send us an email and we will get back to you.</p>
             <a href="mailto:support@campuscare.edu" className="text-blue-600 dark:text-blue-400 hover:underline">
               support@campuscare.edu
             </a>

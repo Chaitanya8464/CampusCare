@@ -82,7 +82,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-300">Loading...</p>
@@ -92,7 +92,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-20 pb-8 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-20 pb-8 px-6 transition-colors duration-300">
       <Slidebar />
       
       <div className="ml-20 max-w-3xl mx-auto">
@@ -106,13 +106,13 @@ export default function Profile() {
 
         {fetchError && (
           <div className="mb-4 p-4 rounded-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-            ⚠️ You're currently offline. Some profile data may not be up to date.
+            ⚠️ You are currently offline. Some profile data may not be up to date.
           </div>
         )}
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-colors duration-300">
           {/* Profile Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-8 text-white text-center">
+          <div className="bg-gradient-to-r from-gray-700 to-gray-600 dark:from-white dark:to-gray-300 p-8 text-white dark:text-gray-900 text-center">
             <img
               src={profileLogo}
               alt="Profile"

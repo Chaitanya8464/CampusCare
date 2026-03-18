@@ -1,34 +1,33 @@
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import React from 'react';
 import { auth, db } from '../firebase';
+import { signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
-const AuthContext = createContext(null);
-
 /**
- * Custom hook to access authentication context
- * @returns {Object} Authentication context value
- * @throws {Error} If used outside AuthProvider
+ * Custom hook for managing authentication state
+ * @returns {Object} Authentication state and methods
+ * @returns {Object|null} user - Current Firebase user object
+ * @returns {string|null} role - User role from Firestore
+ * @returns {boolean} loading - Loading state
+ * @returns {Function} logout - Sign out function
  */
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
 
-/**
- * Authentication Provider Component
- * Manages user authentication state and provides auth context to children
- */
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [role, setRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+const AuthContext = React.createContext(null);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = React.useState(null);
+  const [role, setRole] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
 
@@ -40,7 +39,6 @@ export const AuthProvider = ({ children }) => {
             const userData = docSnap.data();
             setRole(userData.role || 'student');
           } else {
-            // Default to student role if no document exists
             setRole('student');
           }
         } catch (error) {
@@ -65,17 +63,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Memoize context value to prevent unnecessary re-renders
-  const value = useMemo(
+  const value = React.useMemo(
     () => ({ user, role, logout, loading }),
     [user, role, loading, logout]
   );
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export default AuthContext;

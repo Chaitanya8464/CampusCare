@@ -1,31 +1,42 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useMemo } from 'react';
+import useThemeHook from '../hooks/useTheme';
 
-const ThemeContext = createContext();
+const ThemeContext = createContext(null);
 
-export const useTheme = () => useContext(ThemeContext);
+/**
+ * Custom hook to access theme context
+ * @returns {Object} Theme context value
+ * @throws {Error} If used outside ThemeProvider
+ */
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+};
 
+/**
+ * Theme Provider Component
+ * Manages dark/light mode theme state and provides context to children
+ */
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const saved = localStorage.getItem("darkMode");
-    return saved ? JSON.parse(saved) : false;
-  });
+  const themeValue = useThemeHook();
 
-  useEffect(() => {
-    localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({
+      isDarkMode: themeValue.isDarkMode,
+      toggleTheme: themeValue.toggleTheme
+    }),
+    [themeValue.isDarkMode, themeValue.toggleTheme]
+  );
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );
 };
+
+export default ThemeContext;

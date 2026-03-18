@@ -43,7 +43,7 @@ export default function Help() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-24 pb-12 px-6 transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 dark:text-white text-center mb-4">Help Center</h1>
         <p className="text-gray-600 dark:text-gray-300 text-center mb-12">

@@ -56,7 +56,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-20 pb-8 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-20 pb-8 px-6 transition-colors duration-300">
       <Slidebar />
       
       <div className="ml-20 max-w-3xl mx-auto">

@@ -83,7 +83,7 @@ export default function SignInForm() {
   ];
 
   return (
-    <div className="min-h-screen w-full flex bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen w-full flex bg-white dark:bg-black transition-colors duration-300">
       {/* Left Section - Greeting */}
       <div className="hidden lg:flex w-1/2 items-center justify-center p-12">
         <motion.div
@@ -96,7 +96,7 @@ export default function SignInForm() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg"
+            className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-gray-700 to-gray-600 dark:from-white dark:to-gray-300 rounded-full flex items-center justify-center shadow-lg"
           >
             <span className="text-5xl">🎓</span>
           </motion.div>
@@ -140,7 +140,7 @@ export default function SignInForm() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="w-16 h-16 mx-auto mb-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg"
+              className="w-16 h-16 mx-auto mb-3 bg-gradient-to-r from-gray-600 to-gray-500 dark:from-white dark:to-gray-300 rounded-full flex items-center justify-center shadow-lg"
             >
               <span className="text-3xl">🎓</span>
             </motion.div>
@@ -267,7 +267,7 @@ export default function SignInForm() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isLoggingIn}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-xl px-4 py-2.5 mb-3 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+              className="w-full bg-gradient-to-r from-gray-700 to-gray-600 dark:from-white dark:to-gray-300 text-white dark:text-gray-900 font-medium rounded-xl px-4 py-2.5 mb-3 hover:shadow-lg hover:shadow-gray-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
             >
               {isLoggingIn ? (
                 <>
@@ -302,7 +302,7 @@ export default function SignInForm() {
             )}
 
             <p className="text-xs text-gray-600 dark:text-gray-400 text-center mt-5">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link to="/signup" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline transition-all">
                 Create New
               </Link>

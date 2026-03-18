@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Terms() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-24 pb-12 px-6 transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 dark:text-white text-center mb-4">Terms of Service</h1>
         <p className="text-gray-500 dark:text-gray-400 text-center mb-8">Last updated: March 5, 2026</p>
@@ -56,8 +56,8 @@ export default function Terms() {
           <section>
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-3">5. Disclaimer</h2>
             <p className="text-gray-600 dark:text-gray-300">
-              The materials on CampusCare are provided on an 'as is' basis. CampusCare makes no warranties, 
-              expressed or implied, and hereby disclaims and negates all other warranties including, without 
+              The materials on CampusCare are provided on an &apos;as is&apos; basis. CampusCare makes no warranties,
+              expressed or implied, and hereby disclaims and negates all other warranties including, without
               limitation, implied warranties or conditions of merchantability, fitness for a particular purpose.
             </p>
           </section>

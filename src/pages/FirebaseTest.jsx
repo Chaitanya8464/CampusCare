@@ -13,7 +13,7 @@ export default function FirebaseTest() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-24 pb-12 px-6">
+    <div className="min-h-screen bg-white dark:bg-black pt-24 pb-12 px-6">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">
           Firebase Connection Test
@@ -51,16 +51,16 @@ export default function FirebaseTest() {
           <ol className="list-decimal list-inside space-y-3 text-gray-600 dark:text-gray-300">
             <li>Go to <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Firebase Console</a></li>
             <li>Select your project: <strong>campuscare-3a887</strong></li>
-            <li>Click on <strong>"Firestore Database"</strong></li>
-            <li>If not created, click <strong>"Create database"</strong></li>
-            <li>Choose <strong>"Start in test mode"</strong></li>
-            <li>Go to <strong>"Rules"</strong> tab</li>
+            <li>Click on <strong>&quot;Firestore Database&quot;</strong></li>
+            <li>If not created, click <strong>&quot;Create database&quot;</strong></li>
+            <li>Choose <strong>&quot;Start in test mode&quot;</strong></li>
+            <li>Go to <strong>&quot;Rules&quot;</strong> tab</li>
             <li>Make sure rules allow read/write (see below)</li>
           </ol>
 
           <div className="mt-4 bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
             <p className="text-sm font-mono text-gray-700 dark:text-gray-300">
-              rules_version = '2';<br/>
+              rules_version = &apos;2&apos;;<br/>
               service cloud.firestore &#123;<br/>
               &nbsp;&nbsp;match /databases/&#123;database&#125;/documents &#123;<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;match /&#123;document=**&#125; &#123;<br/>

@@ -181,7 +181,7 @@ export default function Services() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-24 pb-12 px-6 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 dark:text-white text-center mb-4">Our Services</h1>
         <p className="text-gray-600 dark:text-gray-300 text-center mb-12 max-w-2xl mx-auto">
@@ -191,16 +191,16 @@ export default function Services() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, index) => (
-            <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+            <div key={index} className="bg-white dark:bg-black rounded-xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-200 dark:border-gray-800">
               {service.icon}
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2 text-center">{service.title}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm text-center">{service.description}</p>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">{service.title}</h3>
+              <p className="text-gray-700 dark:text-gray-300 text-sm text-center">{service.description}</p>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-12">
-          <Link to="/submit" className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-8 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 inline-block">
+          <Link to="/submit" className="bg-gradient-to-r from-gray-700 to-gray-600 dark:from-white dark:to-gray-300 text-white dark:text-gray-900 px-8 py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 inline-block">
             Submit a Complaint
           </Link>
         </div>

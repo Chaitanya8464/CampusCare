@@ -37,7 +37,7 @@ export default function Dashboard() {
       );
       const snapshot = await getDocs(q);
 
-      let complaintsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const complaintsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
       console.log("User complaints fetched:", complaintsData.length);
       console.log("User complaints data:", complaintsData);
@@ -68,7 +68,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-300">Loading...</p>
@@ -78,7 +78,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-20 pb-8 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-20 pb-8 px-6 transition-colors duration-300">
       <Slidebar />
       
       <div className="ml-20 max-w-6xl">
@@ -89,7 +89,7 @@ export default function Dashboard() {
 
         {offlineMode && (
           <div className="mb-4 p-4 rounded-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-            ⚠️ You're currently offline. Some data may not be up to date.
+            ⚠️ You are currently offline. Some data may not be up to date.
           </div>
         )}
 

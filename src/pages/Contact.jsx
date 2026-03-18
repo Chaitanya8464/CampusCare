@@ -23,7 +23,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-24 pb-12 px-6 transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 dark:text-white text-center mb-4">Contact Us</h1>
         <p className="text-gray-600 dark:text-gray-300 text-center mb-12">
@@ -32,35 +32,35 @@ export default function Contact() {
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Contact Info */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 transition-colors duration-300">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Get in Touch</h2>
-            
+          <div className="bg-white dark:bg-black rounded-xl shadow-lg p-8 transition-colors duration-300 border border-gray-200 dark:border-gray-800">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Get in Touch</h2>
+
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold text-gray-700 dark:text-gray-300">📍 Address</h3>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-300">📍 Address</h3>
                 <p className="text-gray-600 dark:text-gray-400">Campus Administration Building<br />Room 101, Main Campus</p>
               </div>
-              
+
               <div>
-                <h3 className="font-semibold text-gray-700 dark:text-gray-300">📧 Email</h3>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-300">📧 Email</h3>
                 <p className="text-gray-600 dark:text-gray-400">support@campuscare.edu</p>
               </div>
-              
+
               <div>
-                <h3 className="font-semibold text-gray-700 dark:text-gray-300">📞 Phone</h3>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-300">📞 Phone</h3>
                 <p className="text-gray-600 dark:text-gray-400">+1 (555) 123-4567</p>
               </div>
-              
+
               <div>
-                <h3 className="font-semibold text-gray-700 dark:text-gray-300">🕐 Office Hours</h3>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-300">🕐 Office Hours</h3>
                 <p className="text-gray-600 dark:text-gray-400">Monday - Friday: 9:00 AM - 5:00 PM</p>
               </div>
             </div>
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 transition-colors duration-300">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Send us a Message</h2>
+          <div className="bg-white dark:bg-black rounded-xl shadow-lg p-8 transition-colors duration-300 border border-gray-200 dark:border-gray-800">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Send us a Message</h2>
             
             {submitted ? (
               <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 p-4 rounded-lg text-center">

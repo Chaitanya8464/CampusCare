@@ -115,7 +115,7 @@ export default function AdminDashboard() {
   const resolvedComplaints = complaints.filter(c => c.status === "Resolved");
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-20 pb-8 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black pt-20 pb-8 px-6 transition-colors duration-300">
       <Slidebar />
 
       <div className="ml-20 max-w-7xl">
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
 
         {offlineMode && (
           <div className="mb-4 p-4 rounded-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-            ⚠️ You're currently offline. Some data may not be up to date.
+            ⚠️ You are currently offline. Some data may not be up to date.
           </div>
         )}
 
