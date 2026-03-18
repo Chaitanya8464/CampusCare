@@ -33,11 +33,11 @@ export default function Navbar() {
   return (
     <div className="flex flex-col">
       {/* Navbar */}
-      <nav className="flex justify-between items-center bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-white px-6 py-3 shadow-lg fixed top-0 left-0 w-full z-50 transition-colors duration-300 border-b border-gray-700">
+      <nav className="flex justify-between items-center bg-gray-900 dark:bg-black text-white px-6 py-3 shadow-lg fixed top-0 left-0 w-full z-50 transition-colors duration-300 border-b border-gray-700 dark:border-gray-800">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold flex items-center gap-2 hover:scale-105 transition-transform duration-300">
           <img src={logo} alt="CampusCare" className="w-10 h-10 rounded-full shadow-md ring-2 ring-blue-500" />
-          <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">CampusCare</span>
+          <span className="text-white">CampusCare</span>
         </Link>
 
         {/* Menu (Desktop) */}
@@ -109,7 +109,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 focus:outline-none group"
                 >
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-500 to-gray-400 dark:from-white dark:to-gray-300 rounded-full blur-sm opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
                     <img
                       src={profileLogo}
                       alt="Profile"
@@ -138,7 +138,7 @@ export default function Navbar() {
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setProfileMenuOpen(false)}></div>
                     <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl z-50 overflow-hidden border border-gray-200 dark:border-gray-700 animate-fade-in">
-                      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
+                      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-600">
                         <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
                           {user.displayName || user.email}
                         </p>
@@ -201,7 +201,7 @@ export default function Navbar() {
           ) : (
             <Link
               to="/login"
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-600 dark:from-white dark:to-gray-300 hover:from-gray-800 hover:to-gray-700 dark:hover:from-gray-100 dark:hover:to-gray-200 text-white dark:text-gray-900 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
