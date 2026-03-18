@@ -24,6 +24,15 @@ const ComplaintForm = () => {
     file: null
   });
 
+  // OTP state
+  const [otp, setOtp] = useState('');
+  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpTimer, setOtpTimer] = useState(0);
+  const [otpError, setOtpError] = useState('');
+
   // UI state
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -52,6 +61,13 @@ const ComplaintForm = () => {
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+    // Reset OTP verification if contact or otpMethod changes
+    if (field === 'contact' || field === 'otpMethod') {
+      setOtpVerified(false);
+      setOtpSent(false);
+      setOtp('');
+      setOtpError('');
     }
   }, [errors]);
 
@@ -83,14 +99,128 @@ const ComplaintForm = () => {
   };
 
   /**
-   * Handle OTP request (mock implementation)
+   * Generate random 6-digit OTP
+   */
+  const generateOtp = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
+
+  /**
+   * Validate contact information before sending OTP
+   */
+  const validateContactForOtp = () => {
+    if (!formData.contact || formData.contact.trim().length === 0) {
+      setErrors(prev => ({ ...prev, contact: 'Please enter contact information' }));
+      return false;
+    }
+
+    if (formData.otpMethod === 'Email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.contact)) {
+        setErrors(prev => ({ ...prev, contact: 'Please enter a valid email address' }));
+        return false;
+      }
+    } else if (formData.otpMethod === 'Mobile') {
+      const phoneRegex = /^[\d\s-+()]{10,}$/;
+      if (!phoneRegex.test(formData.contact)) {
+        setErrors(prev => ({ ...prev, contact: 'Please enter a valid phone number' }));
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  /**
+   * Handle OTP request
    */
   const handleOtpRequest = () => {
+    setOtpError('');
+    
+    // Validate OTP method selection
     if (!formData.otpMethod) {
       setErrors(prev => ({ ...prev, otpMethod: 'Please select Mobile or Email to receive OTP' }));
       return;
     }
-    alert(`OTP sent to your ${formData.otpMethod}`);
+
+    // Validate contact information
+    if (!validateContactForOtp()) {
+      return;
+    }
+
+    setOtpLoading(true);
+
+    // Simulate OTP generation and sending (replace with actual API call in production)
+    setTimeout(() => {
+      const newOtp = generateOtp();
+      setGeneratedOtp(newOtp);
+      setOtpSent(true);
+      setOtpTimer(120); // 2 minutes timer
+      setOtpLoading(false);
+      
+      // In production, send OTP via email/SMS API here
+      // For demo purposes, show OTP in console
+      console.log('Generated OTP:', newOtp);
+      alert(`OTP sent to your ${formData.otpMethod}: ${formData.contact}\n\n[DEMO MODE] OTP: ${newOtp}`);
+      
+      // Start countdown timer
+      const timerInterval = setInterval(() => {
+        setOtpTimer(prev => {
+          if (prev <= 1) {
+            clearInterval(timerInterval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }, 1000);
+  };
+
+  /**
+   * Handle OTP verification
+   */
+  const handleOtpVerify = () => {
+    setOtpError('');
+    
+    if (!otp || otp.length !== 6) {
+      setOtpError('Please enter a valid 6-digit OTP');
+      return;
+    }
+
+    setOtpLoading(true);
+
+    // Simulate OTP verification (replace with actual API call in production)
+    setTimeout(() => {
+      if (otp === generatedOtp) {
+        setOtpVerified(true);
+        setOtpLoading(false);
+        alert('OTP verified successfully!');
+      } else {
+        setOtpError('Invalid OTP. Please try again.');
+        setOtpLoading(false);
+      }
+    }, 500);
+  };
+
+  /**
+   * Handle OTP resend
+   */
+  const handleOtpResend = () => {
+    if (otpTimer > 0) {
+      return;
+    }
+    setOtp('');
+    setOtpVerified(false);
+    handleOtpRequest();
+  };
+
+  /**
+   * Format time for display (MM:SS)
+   */
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   /**
@@ -98,6 +228,13 @@ const ComplaintForm = () => {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if OTP is verified (required for non-anonymous submissions)
+    if (!formData.anonymous && !otpVerified) {
+      setErrors(prev => ({ ...prev, submit: 'Please verify OTP before submitting the complaint' }));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     // Validate form
     const validation = validateComplaintForm(formData);
@@ -123,6 +260,7 @@ const ComplaintForm = () => {
         description: formData.description,
         anonymous: formData.anonymous,
         otpMethod: formData.otpMethod,
+        otpVerified: otpVerified,
         fileName: formData.file ? formData.file.name : null,
         createdAt: serverTimestamp(),
         status: 'Pending'
@@ -146,6 +284,12 @@ const ComplaintForm = () => {
         file: null
       });
       setErrors({});
+      setOtp('');
+      setGeneratedOtp('');
+      setOtpSent(false);
+      setOtpVerified(false);
+      setOtpTimer(0);
+      setOtpError('');
 
       // Clear success message after 5 seconds
       setTimeout(() => setSuccessMsg(''), 5000);
@@ -398,15 +542,80 @@ const ComplaintForm = () => {
             <button
               type="button"
               onClick={handleOtpRequest}
-              className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              disabled={otpLoading || otpSent}
+              className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Request OTP
+              {otpLoading ? 'Sending...' : otpSent ? 'OTP Sent' : 'Request OTP'}
             </button>
           </div>
           {errors.otpMethod && (
             <p className="text-sm text-red-600 dark:text-red-400" role="alert">
               {errors.otpMethod}
             </p>
+          )}
+
+          {/* OTP Input and Verification */}
+          {otpSent && !otpVerified && (
+            <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
+              <div className="flex items-center gap-3 mb-3">
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => {
+                    setOtp(e.target.value.replace(/[^0-9]/g, ''));
+                    setOtpError('');
+                  }}
+                  placeholder="Enter 6-digit OTP"
+                  maxLength={6}
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-center tracking-widest text-lg"
+                  aria-label="Enter OTP"
+                />
+                <button
+                  type="button"
+                  onClick={handleOtpVerify}
+                  disabled={otpLoading || otp.length !== 6}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {otpLoading ? 'Verifying...' : 'Verify'}
+                </button>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {otpTimer > 0 ? (
+                    <>Resend OTP in: <span className="font-mono text-blue-600 dark:text-blue-400">{formatTime(otpTimer)}</span></>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleOtpResend}
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Resend OTP
+                    </button>
+                  )}
+                </p>
+                {otpVerified && (
+                  <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+                    ✓ Verified
+                  </span>
+                )}
+              </div>
+              {otpError && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">
+                  {otpError}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* OTP Verified Status */}
+          {otpVerified && (
+            <div className="mt-3 flex items-center gap-2 text-green-600 dark:text-green-400">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm font-medium">OTP verified successfully</span>
+            </div>
           )}
         </div>
 
